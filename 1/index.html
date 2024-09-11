@@ -1,0 +1,665 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>Project 1</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Project 1: Images of the Russian Empire - Colorizing the Prokudin-Gorskii photo collection</h1>
+    <h3>Single-Scale Approach: </h3>
+    <p>In my implementation for smaller images, I first crop the image to remove the noise that image borders introduce by only using the inner 90% of the image 
+        (so I crop 5% of the outer width/height on top/left/right/down). This also improves my program's speed by lowering the number of pixels to iterate over.
+        To align the images, I find the offsets of the red/green channels relative to the blue channel.
+        To determine the optimal x/y offset, I iterate over potential offsets in the table shown below and find the x/y offsets that maximize
+        the normalized cross-correlation of the differences in raw images and the images with canny edge detection w/ sigma=0.9.
+
+        <br>
+        <br>
+        
+        
+        <table border="1">
+            <tr>
+                <th></th>
+                <th>Green</th>
+                <th>Red</th>
+            </tr>
+            <tr>
+                <td>X-Range</td>
+                <td>[-12, 12]</td>
+                <td>[-12, 12]</td>
+            </tr>
+            <tr>
+                <td>Y-Range</td>
+                <td>[=5, 25]</td>
+                <td>[-5, 25]</td>
+            </tr>
+        </table>
+
+    </p>
+
+    <h3>Multi-Scale Approach: </h3>
+    <p>
+        To support larger ".tif" images, I first scale the input image down by half until its width is less than 700 pixels.
+        I chose 700 pixels because it gave the best balance between finding the best offsets while minimizing compute time.
+        The algorithm starts by calling the single-scale approach function and passing the smallest image first with a very large potential offset range.
+        Then, I repeat this process in an image pyramid, scaling up the image by two until we reach the original resolution, 
+        doubling the offset at each level and searching +/- 2 in each direciton.
+    </p>
+
+    <p><br>One problem I ran into was the canny edge detection was being too strict and not producing enough lines to add significant value.
+        I fixed this by lowering the sigma value which improved my program's performance in adding edge overlap. </p>
+
+    <h3>Low Resolution Images: </h3>
+        <img src="rgb_images/cathedral_rgb.jpg" alt="Cathedral RGB">
+        <img src="rgb_images/monastery_rgb.jpg" alt="Monastery RGB">
+    <h3>High Resolution Images: </h3>
+    <h4>Selected examples from the Prokudin-Gorskii collection:</h4>
+        <img src="rgb_images_scaled/house1_sample_rgb_scaled.jpg" alt="House RGB">
+        <img src="rgb_images_scaled/house2_sample_rgb_scaled.jpg" alt="House RGB">
+    <h4>Dataset examples:</h4>
+        <img src="rgb_images_scaled/sculpture_rgb_scaled.jpg" alt="Sculpture RGB">
+        <img src="rgb_images_scaled/icon_rgb_scaled.jpg" alt="Icon RGB">
+
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 1</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #444;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 1.75em;
+            color: #555;
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+
+        h4 {
+            font-size: 1.5em;
+            color: #666;
+            margin-top: 20px;
+        }
+
+        p {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .main-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .main-table td {
+            vertical-align: top;
+        }
+        .inner-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .inner-table td, .inner-table th {
+            padding: 8px;
+            text-align: center;
+        }
+        .image-container {
+            text-align: center;
+        }
+
+        img {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .image-section img {
+            flex-basis: 45%;
+            margin: 10px;
+        }
+
+        .centered-image img {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .center {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 50%;
+          }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.9em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Project 1: Images of the Russian Empire - Colorizing the Prokudin-Gorskii Photo Collection</h1>
+    <h4>Jason Lee</h4>
+
+    <div class="centered-image">
+        <img src="rgb_images/icon_rgb.jpg" alt="Icon Image" width="300">
+    </div>
+
+    <h3>Single-Scale Approach:</h3>
+    <p>In my implementation for smaller images, I first crop the image to remove the noise that image borders introduce by only using the inner 90% of the image 
+        (so I crop 5% of the outer width/height on each side). This also improves my program's speed by lowering the number of pixels to iterate over.
+        To align the images, I find the offsets of the red/green channels relative to the blue channel.
+        To determine the optimal x/y offset, I iterate over potential offsets in the table shown below and find the x/y offsets that maximize
+        the normalized cross-correlation of the differences in raw images and the images with canny edge detection (σ=0.9).
+    </p>
+
+    <table>
+        <tr>
+            <th></th>
+            <th>Green</th>
+            <th>Red</th>
+        </tr>
+        <tr>
+            <td>X-Range</td>
+            <td>[-12, 12]</td>
+            <td>[-12, 12]</td>
+        </tr>
+        <tr>
+            <td>Y-Range</td>
+            <td>[-5, 25]</td>
+            <td>[-5, 25]</td>
+        </tr>
+    </table>
+
+    
+    <h3>Single-Scale Images:</h3>
+    <table class="main-table">
+        <tr>
+            
+            <td>
+                <div class="image-container">
+                    <img src="rgb_images/cathedral_rgb.jpg" alt="Image 1">
+                    <div class="title">Cathedral.jpg</div>
+                    <table class="inner-table">
+                        <tr>
+                            <th>Channel</th>
+                            <th>X-Offset</th>
+                            <th>Y-Offset</th>
+                        </tr>
+                        <tr>
+                            <td>Red</td>
+                            <td>3</td>
+                            <td>12</td>
+                        </tr>
+                        <tr>
+                            <td>Green</td>
+                            <td>2</td>
+                            <td>5</td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+
+            <td>
+                <div class="image-container">
+                    <img src="rgb_images/monastery_rgb.jpg" alt="Image 2">
+                    <div class="title">Monastery.jpg</div>
+                    <table class="inner-table">
+                        <tr>
+                            <th>Channel</th>
+                            <th>X-Offset</th>
+                            <th>Y-Offset</th>
+                        </tr>
+                        <tr>
+                            <td>Red</td>
+                            <td>2</td>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <td>Green</td>
+                            <td>2</td>
+                            <td>-3</td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+
+            <td>
+                <div class="image-container">
+                    <img src="rgb_images/tobolsk_rgb.jpg" alt="Image 3">
+                    <div class="title">Tobolsk.jpg</div>
+                    <table class="inner-table">
+                        <tr>
+                            <th>Channel</th>
+                            <th>X-Offset</th>
+                            <th>Y-Offset</th>
+                        </tr>
+                        <tr>
+                            <td>Red</td>
+                            <td>3</td>
+                            <td>6</td>
+                        </tr>
+                        <tr>
+                            <td>Green</td>
+                            <td>3</td>
+                            <td>3</td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <h3>Multi-Scale Approach:</h3>
+    <p>To support larger ".tif" images, I first scale the input image down by half until its width is less than 700 pixels.
+        I chose 700 pixels because it gave the best balance between finding the best offsets while minimizing compute time.
+        The algorithm starts by calling the single-scale approach function and passing the smallest image first with a very large potential offset range.
+        Then, I repeat this process in an image pyramid, scaling up the image by two until the image is scaled to its original resolution, 
+        passing the doubled previous offset and searching +/- 2 offset at each step.
+    </p>
+
+    <h3>High Resolution Images:</h3>
+    <h4>Selected examples from the Prokudin-Gorskii collection:</h4>
+    <table class="main-table">
+        <tr>
+            <td>
+                <div class="image-container">
+                    <img src="rgb_images/dataset_sample_rgb.jpg" alt="Church">
+                    <div class="title">
+                        <a href="https://www.loc.gov/item/2018680358/">
+                            Toiiskii sobor v Ostashkove
+                        </a>
+                    </div>
+                    <table class="inner-table">
+                        <tr>
+                            <th>Channel</th>
+                            <th>X-Offset</th>
+                            <th>Y-Offset</th>
+                        </tr>
+                        <tr>
+                            <td>Red</td>
+                            <td>14</td>
+                            <td>113</td>
+                        </tr>
+                        <tr>
+                            <td>Green</td>
+                            <td>12</td>
+                            <td>36</td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+
+            <td>
+                <div class="image-container">
+                    <img src="rgb_images/house2_sample_rgb.jpg" alt="Emir">
+                    <div class="title">
+                        <a href="https://www.loc.gov/item/2018678836/">
+                            Derevi︠a︡nnai︠a︡ t︠s︡erkovʹ vo imi︠a︡ Preobrazhenīi︠a︡ Gospodni︠a︡. s. Pidʹma.
+                        </a>
+                    </div>
+                    <table class="inner-table">
+                        <tr>
+                            <th>Channel</th>
+                            <th>X-Offset</th>
+                            <th>Y-Offset</th>
+                        </tr>
+                        <tr>
+                            <td>Red</td>
+                            <td>38</td>
+                            <td>33</td>
+                        </tr>
+                        <tr>
+                            <td>Green</td>
+                            <td>19</td>
+                            <td>11</td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <h4>Dataset Images:</h4>
+
+    <table class="main-table">
+        <tr>
+            
+            <td>
+                <div class="image-container">
+                    <img src="rgb_images/church_rgb.jpg" alt="Church">
+                    <div class="title">Church.tif RGB</div>
+                    <table class="inner-table">
+                        <tr>
+                            <th>Channel</th>
+                            <th>X-Offset</th>
+                            <th>Y-Offset</th>
+                        </tr>
+                        <tr>
+                            <td>Red</td>
+                            <td>-4</td>
+                            <td>58</td>
+                        </tr>
+                        <tr>
+                            <td>Green</td>
+                            <td>4</td>
+                            <td>25</td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+
+            <td>
+                <div class="image-container">
+                    <img src="rgb_images/emir_rgb.jpg" alt="Emir">
+                    <div class="title">Emir.tif RGB</div>
+                    <table class="inner-table">
+                        <tr>
+                            <th>Channel</th>
+                            <th>X-Offset</th>
+                            <th>Y-Offset</th>
+                        </tr>
+                        <tr>
+                            <td>Red</td>
+                            <td>20</td>
+                            <td>53</td>
+                        </tr>
+                        <tr>
+                            <td>Green</td>
+                            <td>11</td>
+                            <td>25</td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+
+            <td>
+                <div class="image-container">
+                    <img src="rgb_images/harvesters_rgb.jpg" alt="Harvesters">
+                    <div class="title">Harvesters.tif RGB</div>
+                    <table class="inner-table">
+                        <tr>
+                            <th>Channel</th>
+                            <th>X-Offset</th>
+                            <th>Y-Offset</th>
+                        </tr>
+                        <tr>
+                            <td>Red</td>
+                            <td>11</td>
+                            <td>118</td>
+                        </tr>
+                        <tr>
+                            <td>Green</td>
+                            <td>18</td>
+                            <td>60</td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            
+            <td>
+                <div class="image-container">
+                    <img src="rgb_images/icon_rgb.jpg" alt="Church">
+                    <div class="title">Icon.tif RGB</div>
+                    <table class="inner-table">
+                        <tr>
+                            <th>Channel</th>
+                            <th>X-Offset</th>
+                            <th>Y-Offset</th>
+                        </tr>
+                        <tr>
+                            <td>Red</td>
+                            <td>22</td>
+                            <td>90</td>
+                        </tr>
+                        <tr>
+                            <td>Green</td>
+                            <td>16</td>
+                            <td>38</td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+
+            <td>
+                <div class="image-container">
+                    <img src="rgb_images/lady_rgb.jpg" alt="Emir">
+                    <div class="title">Lady.tif RGB</div>
+                    <table class="inner-table">
+                        <tr>
+                            <th>Channel</th>
+                            <th>X-Offset</th>
+                            <th>Y-Offset</th>
+                        </tr>
+                        <tr>
+                            <td>Red</td>
+                            <td>13</td>
+                            <td>120</td>
+                        </tr>
+                        <tr>
+                            <td>Green</td>
+                            <td>9</td>
+                            <td>57</td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+
+            <td>
+                <div class="image-container">
+                    <img src="rgb_images/melons_rgb.jpg" alt="Harvesters">
+                    <div class="title">Melons.tif RGB</div>
+                    <table class="inner-table">
+                        <tr>
+                            <th>Channel</th>
+                            <th>X-Offset</th>
+                            <th>Y-Offset</th>
+                        </tr>
+                        <tr>
+                            <td>Red</td>
+                            <td>13</td>
+                            <td>177</td>
+                        </tr>
+                        <tr>
+                            <td>Green</td>
+                            <td>9</td>
+                            <td>79</td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            
+            <td>
+                <div class="image-container">
+                    <img src="rgb_images/onion_church_rgb.jpg" alt="Church">
+                    <div class="title">Onion_church.tif RGB</div>
+                    <table class="inner-table">
+                        <tr>
+                            <th>Channel</th>
+                            <th>X-Offset</th>
+                            <th>Y-Offset</th>
+                        </tr>
+                        <tr>
+                            <td>Red</td>
+                            <td>34</td>
+                            <td>107</td>
+                        </tr>
+                        <tr>
+                            <td>Green</td>
+                            <td>24</td>
+                            <td>52</td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+
+            <td>
+                <div class="image-container">
+                    <img src="rgb_images/sculpture_rgb.jpg" alt="Emir">
+                    <div class="title">Sculpture.tif RGB</div>
+                    <table class="inner-table">
+                        <tr>
+                            <th>Channel</th>
+                            <th>X-Offset</th>
+                            <th>Y-Offset</th>
+                        </tr>
+                        <tr>
+                            <td>Red</td>
+                            <td>-27</td>
+                            <td>140</td>
+                        </tr>
+                        <tr>
+                            <td>Green</td>
+                            <td>-11</td>
+                            <td>33</td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+
+            <td>
+                <div class="image-container">
+                    <img src="rgb_images/self_portrait_rgb.jpg" alt="Harvesters">
+                    <div class="title">Self_portrait.tif RGB</div>
+                    <table class="inner-table">
+                        <tr>
+                            <th>Channel</th>
+                            <th>X-Offset</th>
+                            <th>Y-Offset</th>
+                        </tr>
+                        <tr>
+                            <td>Red</td>
+                            <td>37</td>
+                            <td>175</td>
+                        </tr>
+                        <tr>
+                            <td>Green</td>
+                            <td>29</td>
+                            <td>77</td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+   
+        <tr>
+            
+            <td>
+                <div class="image-container">
+                    <img src="rgb_images/three_generations_rgb.jpg" alt="Church">
+                    <div class="title">three_generations.tif RGB</div>
+                    <table class="inner-table">
+                        <tr>
+                            <th>Channel</th>
+                            <th>X-Offset</th>
+                            <th>Y-Offset</th>
+                        </tr>
+                        <tr>
+                            <td>Red</td>
+                            <td>8</td>
+                            <td>112</td>
+                        </tr>
+                        <tr>
+                            <td>Green</td>
+                            <td>16</td>
+                            <td>57</td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+
+            <td>
+                <div class="image-container">
+                    <img src="rgb_images/train_rgb.jpg" alt="Emir">
+                    <div class="title">train_rgb.tif RGB</div>
+                    <table class="inner-table">
+                        <tr>
+                            <th>Channel</th>
+                            <th>X-Offset</th>
+                            <th>Y-Offset</th>
+                        </tr>
+                        <tr>
+                            <td>Red</td>
+                            <td>29</td>
+                            <td>85</td>
+                        </tr>
+                        <tr>
+                            <td>Green</td>
+                            <td>8</td>
+                            <td>40</td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <footer>
+        © 2024 - Project 1: Images of the Russian Empire
+    </footer>
+
+</body>
+</html>
