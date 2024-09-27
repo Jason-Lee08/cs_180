@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 1</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #444;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 1.75em;
+            color: #555;
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+
+        h4 {
+            font-size: 1.5em;
+            color: #666;
+            margin-top: 20px;
+        }
+
+        p {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .main-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .main-table td {
+            vertical-align: top;
+        }
+        .inner-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .inner-table td, .inner-table th {
+            padding: 8px;
+            text-align: center;
+        }
+        .image-container {
+            text-align: center;
+        }
+
+        img {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .image-section img {
+            flex-basis: 45%;
+            margin: 10px;
+        }
+
+        .centered-image img {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .centered-text title {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .custom-size-1 {
+            width: 80%;
+            max-width: 400px;
+        }
+
+        .custom-size-2 {
+            width: 50%;
+            max-width: 300px;
+        }
+
+        .image-huge {
+            width: 200%;
+            max-width: 1400px;
+        }
+
+        .image-big {
+            width: 200%;
+            max-width: 800px;
+        }
+
+        .center {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 50%;
+          }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.9em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Project 2: Fun with Filters and Frequencies!</h1>
+    <h4>Jason Lee</h4>
+
+
+    <h3>Gradient Magnitude Computation</h3>
+        <div class="centered-image">
+            <img src="images/part1/Dx_Dy.png" alt="Dx = [1, -1], Dy = [1, -1].T" height="50">
+            <title>Finite Difference Operators</title>
+        </div>
+        <p>
+            To compute the gradient magnitude of an image, we must first compute two 2D convolutions using the finite difference operators shown in the image above.
+            
+            The first convolution is with the Dx filter, which yields the derivative of the image in the x-direction. Let's call its output img_dx.
+            
+            The other convolution is with the Dy filter, resulting in the image's derivative in the y-direction. Let's call this img_dy.
+
+            It's crucial that img_dx and img_dy both have the same dimensions, so <i>same</i> padding must be used when computing these convolutions.
+
+            Then, taking the pixel-wise euclidean norm of the two image gradients, resulting in the gradient magnitude of the image.
+
+            Finally, binarize the gradient magnitude using a threshold parameter, setting all pixel values above this threshold to one, otherwise zero.
+
+            To visualize this gradient magnitude calculation process, see the example below using an image of a person taking a photo.
+        </p>
+
+        <div class="centered-image">
+            <img src="images/part1/cameraman.png" alt="Image 1">
+        </div>
+
+        <table class="main-table">
+            <tr>
+                <td>
+                    <div class="image-container">
+                        <img src="images/part1/cameraman_dx.png" alt="Image 1">
+                        <div class="title">img_dx</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="image-container">
+                        <img src="images/part1/cameraman_dy.png" alt="Image 1">
+                        <div class="title">img_dy</div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="image-container">
+                        <img src="images/part1/gradient_magnitude.png" alt="Image 1">
+                        <div class="title">Gradient Magnitude</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="image-container">
+                        <img src="images/part1/gradient_magnitude_20.png" alt="Image 1">
+                        <div class="title">Binary Gradient Magnitude with threshold=20</div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+    <h3>Derivative of Gaussian (DoG) Filter</h3>
+        <p>
+            The filter explained in the part above is very granular and sometimes detects edges due to noise in the image. To handle this, let's apply a Gaussian filter to the image, then repeating the same process.
+            To see how the Gaussian filter affects the output image, see the comparison below. <br><br>
+
+            <b>What are the visual differences between the approaches? <br></b>
+
+            The original method of solely using the fininte difference operator generates a lot of noise and false edges, especially on the grass and on the left of the person in the image. 
+            
+            While, applying the Gaussian filter removes this extra noise, it makes the lines thicker. The line thickness depends on the value of sigma used for the Gaussian filter (I used sigma=2, as that removed most of the artifacts).
+        </p>
+
+        <table class="main-table">
+            <tr>
+                <td>
+                    <div class="image-container">
+                        <img src="images/part1/gradient_magnitude.png" alt="Image 1">
+                        <div class="title">Applying Finite Difference Operators</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="image-container">
+                        <img src="images/part1/gm_blur.png" alt="Image 1">
+                        <div class="title">Convolving with Gaussian then applying Finite Difference Operators</div>
+                    </div>
+                </td>
+            </tr>
+
+            <tr></tr>
+                <td>
+                    <div class="image-container">
+                        <img src="images/part1/gradient_magnitude_20.png" alt="Image 1">
+                        <div class="title">Applying Finite Difference Operators with threshold=20</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="image-container">
+                        <img src="images/part1/gm_blur_thresh55.png" alt="Image 1">
+                        <div class="title">Convolving with Gaussian then applying Finite Difference Operators w/ threshold=5.5</div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+    <h3>Associativity of Convolutions</h3>
+        <p>
+            One cool property of Convolutions is that they are associative, meaning that: a * (b * c) = (a * b) * c. This means a single filter can be applied to the image to compute the gaussian dx filter and a gaussian dy filter.
+
+            Applying the gaussian_dx and gaussian_dy, then computing the gradient magnitude yields the results shown below. <br><br>
+
+            <b>As you can see, we get the same result as before.</b>
+
+        </p>
+
+        <div class="centered-image">
+            <img src="images/part1/associative_filters.png" class="image-huge">
+        </div>
+
+    <h1>Part 2: Multi-resolution Blending and the Oraple journey    </h1>
+
+    <h3>Unsharp Masking Progression</h3>
+
+        <div class="centered-image">
+            <img src="images/part2/sharp_prog.png" class="image-huge">
+        </div>
+
+        <p>
+            To verify this method works, let's take a sharp image, blur it, then resharpen it.
+        </p>
+
+        <div class="centered-image">
+            <img src="images/part1/sharp_proc.png" class="image-huge">
+        </div>
+
+    <h3>Hybrid Images</h3>
+        <div class="centered-image">
+            <img src="images/part2/weiner_hotdog.png" class="image-huge">
+        </div>
+
+        <table class="inner-table">
+            <tr>
+                <td>
+                    <img src="images/part2/fourier/im1_fourier.png" alt="Image 3">
+                    <div class="title">Weiner Dog (LP)</div>
+                </td>
+                <td>
+                    <img src="images/part2/fourier/im2_fourier.png" alt="Image 3">
+                    <div class="title">Hot Dog (HP)</div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="images/part2/fourier/lp_filtered_fourier.png" alt="Image 3">
+                    <div class="title">Low Pass Filtered Weiner Dog</div>
+                </td>
+                <td>
+                    <img src="images/part2/fourier/hp_filtered_fourier.png" alt="Image 3">
+                    <div class="title">High Pass Filtered Hot Dog</div>
+                </td>
+            </tr>
+        </table>
+
+    <h3>Here are some more fun examples! Zoom in/out of the page to see the effect</h3>
+
+        <table class="inner-table">
+            <tr>
+                <td>
+                    <img src="images/part2/mona_swift.png" alt="Image 3">
+                    <div class="title">Mona Swift</div>
+                </td>
+                <td>
+                    <img src="images/part2/nutmeg_derek.png" alt="Image 3">
+                    <div class="title">Nutmeg + Derek</div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="images/part2/leshrek.png" alt="Image 3">
+                    <div class="title">LeShrek</div>
+                </td>
+                <td>
+                    <img src="images/part2/shrump.png" alt="Image 3">
+                    <div class="title">Shrump (Shrek + Trump) (FAIL) </div>
+                </td>
+            </tr>
+        </table>
+
+    <h3>Multiresolution Blending + Oraple</h3>
+
+    <div class="centered-image">
+        <img src="images/part2/oraple.png" class="image-big">
+    </div>
+
+    <div class="centered-image">
+        <img src="images/part2/oraple_final.png" class="image-big">
+    </div>
+
+    <h3>Some more examples of blending...</h3>
+
+    <table class="main-table">
+        <tr>
+            <td>
+                <div class="image-container">
+                    <img src="images/part2/Shrun.png" alt="Image 1" class="image-big">
+                    <div class="title">Shrek Sun</div>
+                </div>
+            </td>
+            <td>
+                <div class="image-container">
+                    <img src="images/part2/cucarrot.png" alt="Image 1" class="image-big">
+                    <div class="title">Cucarrot</div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

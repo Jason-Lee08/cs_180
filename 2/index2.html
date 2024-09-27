@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 2: Image Processing Techniques</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #444;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 1.75em;
+            color: #555;
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+
+        h4 {
+            font-size: 1.5em;
+            color: #666;
+            margin-top: 20px;
+        }
+
+        p {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .image-container {
+            text-align: center;
+        }
+
+        img {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .image-section img {
+            flex-basis: 45%;
+            margin: 10px;
+        }
+
+        .centered-image img {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.9em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Project 2: Advanced Image Processing Techniques</h1>
+    <h4>Your Name</h4>
+
+    <h3>Part 1: Gradient Magnitude Computation</h3>
+    <p>Gradient magnitude computation is an essential technique in image processing, often used for detecting edges by calculating the magnitude of the image gradient. This method highlights areas of high intensity change, which usually correspond to the boundaries of objects in the image. The gradient magnitude is derived using partial derivatives of the image intensity values, typically calculated via convolution with Sobel or Prewitt filters.</p>
+
+    <h4>1.2 Answering the Questions:</h4>
+    <p>(15 points) In this section, you will include the answers to the specific questions mentioned in part 1.2 of the assignment. Make sure to provide detailed explanations supported by the necessary visualizations.</p>
+
+    <h3>Part 2: Project Implementation (65 points)</h3>
+
+    <h4>2.1 Unsharp Masking (15 points)</h4>
+    <p>Unsharp masking is a method for sharpening an image by enhancing its edges. Below is a progression from the original image to the sharpened image using the unsharp masking technique.</p>
+    <div class="image-section">
+        <div class="image-container">
+            <img src="images/original_image.jpg" alt="Original Image">
+            <div class="title">Original Image</div>
+        </div>
+        <div class="image-container">
+            <img src="images/sharpened_image.jpg" alt="Sharpened Image">
+            <div class="title">Sharpened Image</div>
+        </div>
+    </div>
+
+    <h4>2.2 Hybrid Images and Fourier Analysis (5 points)</h4>
+    <p>Hybrid images combine low-pass and high-pass filtered versions of two images. Below are examples of hybrid images and their corresponding Fourier analysis.</p>
+    <div class="image-section">
+        <div class="image-container">
+            <img src="images/hybrid_image1.jpg" alt="Hybrid Image 1">
+            <div class="title">Hybrid Image 1</div>
+        </div>
+        <div class="image-container">
+            <img src="images/hybrid_image2.jpg" alt="Hybrid Image 2">
+            <div class="title">Hybrid Image 2</div>
+        </div>
+    </div>
+
+    <h4>2.3 Hybrid Image Examples (5 points)</h4>
+    <p>In addition to the first hybrid image, we have created two more examples. One of these is a failure case, where the hybridization did not produce the expected result.</p>
+    <div class="image-section">
+        <div class="image-container">
+            <img src="images/hybrid_image3.jpg" alt="Hybrid Image 3">
+            <div class="title">Hybrid Image 3 (Success)</div>
+        </div>
+        <div class="image-container">
+            <img src="images/hybrid_image_failure.jpg" alt="Hybrid Image Failure">
+            <div class="title">Hybrid Image Failure</div>
+        </div>
+    </div>
+
+    <h4>2.4 Multiresolution Blending (15 points)</h4>
+    <p>Multiresolution blending is a technique to smoothly combine two images across different frequency bands. Below are examples of blending two images, including one with an irregular mask.</p>
+    <div class="image-section">
+        <div class="image-container">
+            <img src="images/blended_image1.jpg" alt="Blended Image 1">
+            <div class="title">Blended Image 1</div>
+        </div>
+        <div class="image-container">
+            <img src="images/blended_image2_irregular_mask.jpg" alt="Blended Image 2 with Irregular Mask">
+            <div class="title">Blended Image 2 (Irregular Mask)</div>
+        </div>
+    </div>
+
+    <h4>Additional Examples (5 points)</h4>
+    <p>Here are two more examples of multiresolution blending. One of these uses an irregular mask to create an interesting combination of the two source images.</p>
+    <div class="image-section">
+        <div class="image-container">
+            <img src="images/blended_image3.jpg" alt="Blended Image 3">
+            <div class="title">Blended Image 3</div>
+        </div>
+        <div class="image-container">
+            <img src="images/blended_image4_irregular_mask.jpg" alt="Blended Image 4 (Irregular Mask)">
+            <div class="title">Blended Image 4 (Irregular Mask)</div>
+        </div>
+    </div>
+
+    <footer>
+        © 2024 - Project 2: Advanced Image Processing Techniques
+    </footer>
+
+</body>
+</html>
