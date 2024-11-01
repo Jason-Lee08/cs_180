@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Class Project</title>
+  <style>
+    /* Root colors for easy customization */
+    :root {
+      --bg-color: #f9f9f9;
+      --primary-color: #333;
+      --secondary-color: #555;
+      --accent-color: #1f8dd6;
+      --border-color: #ddd;
+      --gallery-gap: 30px;
+    }
+
+    /* Basic resets */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--primary-color);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Page container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Header styling */
+    h1, h2, h3 {
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-size: 1.8em;
+      margin-top: 30px;
+    }
+
+    /* Section separators */
+    .section {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 20px;
+    }
+
+    /* Gallery container with gap */
+    .gallery-container {
+      margin-bottom: var(--gallery-gap);
+    }
+
+    /* Responsive grid layout for gallery */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .gallery-item {
+      text-align: center;
+      color: var(--secondary-color);
+    }
+
+    .gallery img {
+      width: 100%;
+      height: auto;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s;
+    }
+
+    .gallery img:hover {
+      transform: scale(1.05);
+    }
+
+    .gallery-caption {
+      margin-top: 5px;
+      font-size: 0.9em;
+    }
+
+    /* Table styling */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid var(--border-color);
+      text-align: left;
+    }
+
+    th {
+      background-color: var(--accent-color);
+      color: #fff;
+      font-weight: bold;
+    }
+
+    /* Footer styling */
+    footer {
+      text-align: center;
+      padding: 10px 0;
+      margin-top: 40px;
+      color: var(--secondary-color);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Project 4: [Auto]Stitching Photo Mosaics</h1>
+
+    <div class="section">
+        <h2>Project 4A: Image Warping and Mosaicing</h2>
+        <div class="section">
+            <h3>Shooting The Pictures</h3>
+            <div class="gallery">
+                <img src="images/IMG_0898.png" alt="Image 1">
+                <img src="images/IMG_0899.png" alt="Image 2">
+                <img src="images/IMG_0900.png" alt="Image 3">
+            </div>
+            <div class="gallery">
+                <img src="images/left.jpg" alt="Image 1">
+                <img src="images/center.jpg" alt="Image 2">
+                <img src="images/right.jpg" alt="Image 3">
+            </div>
+            <div class="gallery">
+                <img src="images/sun_left.png" alt="Image 1">
+                <img src="images/sun_right.png" alt="Image 2">
+            </div>
+        </div>
+
+        <p>Here are some pictures I took for this project. In each set of images, I tried to only rotate my phone, trying to keep as still as possible to minimize error due to translation. These pictures were taken with my iPhone 15 Pro.</p>
+        <div class="gallery">
+            <div class=""gallery-item>
+                <img src="images/left_center.png" alt="Image 1">
+                <img src="images/left_center.png" alt="Image 1">
+                <div class="gallery-caption">Then, I labeled the following corresponding points between the left/center images and center/right images.</div>
+            </div>
+        </div>
+      </div>
+      
+    </div>
+
+    <div class="section">
+      <h2>Data Table</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Header 1</th>
+            <th>Header 2</th>
+            <th>Header 3</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Data 1</td>
+            <td>Data 2</td>
+            <td>Data 3</td>
+          </tr>
+          <tr>
+            <td>Data A</td>
+            <td>Data B</td>
+            <td>Data C</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <footer>
+      <p>Class Project &copy; 2024</p>
+    </footer>
+  </div>
+</body>
+</html>
