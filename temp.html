@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Computer Vision (CS180) Class Projects</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+        }
+        header {
+            text-align: center;
+            padding: 20px;
+            background: #0056b3;
+            color: white;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+        header p {
+            margin: 5px 0;
+            font-size: 1.2em;
+        }
+        .sidebar {
+            width: 250px;
+            background: #333;
+            color: white;
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+            overflow-y: auto;
+        }
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: background 0.3s;
+        }
+        .sidebar a:hover {
+            background: #0056b3;
+        }
+        .content {
+            margin-left: 270px;
+            padding: 20px;
+            flex: 1;
+        }
+        .project {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .project img {
+            max-width: 120px;
+            max-height: 120px;
+            border-radius: 8px;
+            margin-right: 15px;
+        }
+        .project-content {
+            flex: 1;
+        }
+        .project-content a {
+            font-size: 1.5em;
+            color: #0056b3;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .project-content a:hover {
+            text-decoration: underline;
+        }
+        .project-content p {
+            margin: 5px 0;
+            font-size: 1em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Projects</h2>
+        <a href="./1/index.html">Project 1: Feature Extraction</a>
+        <a href="./2/index.html">Project 2: Image Morphing</a>
+        <a href="./3/index.html">Project 3: Seam Carving</a>
+        <a href="./4_ab/index.html">Project 4A/B: Hybrid Images</a>
+        <a href="./5/index.html">Project 5A/B: Panoramic Mosaics</a>
+        <a href="./final_submission_2/index.html">Final Project: NeRF</a>
+    </div>
+    <div class="content">
+        <header>
+            <h1>Computer Vision (CS180) Class Projects</h1>
+            <p>by [Your Name]</p>
+            <p>Click on the links below to see each project</p>
+        </header>
+        <div class="project">
+            <img src="project1.jpg" alt="Feature Extraction and Matching">
+            <div class="project-content">
+                <a href="./1/index.html">Project 1: Feature Extraction and Matching</a>
+                <p>Explore techniques for detecting and matching features between images.</p>
+            </div>
+        </div>
+        <div class="project">
+            <img src="project2.jpg" alt="Image Morphing">
+            <div class="project-content">
+                <a href="./2/index.html">Project 2: Image Morphing</a>
+                <p>Create smooth transitions between two images using morphing techniques.</p>
+            </div>
+        </div>
+        <div class="project">
+            <img src="project3.jpg" alt="Seam Carving">
+            <div class="project-content">
+                <a href="./3/index.html">Project 3: Seam Carving</a>
+                <p>Implement seam carving for intelligent content-aware image resizing.</p>
+            </div>
+        </div>
+        <div class="project">
+            <img src="project4.jpg" alt="Hybrid Images">
+            <div class="project-content">
+                <a href="./4_ab/index.html">Project 4A/B: Hybrid Images</a>
+                <p>Combine low and high frequencies from two images to create hybrid effects.</p>
+            </div>
+        </div>
+        <div class="project">
+            <img src="project5.jpg" alt="Panoramic Mosaics">
+            <div class="project-content">
+                <a href="./5/index.html">Project 5A/B: Panoramic Mosaics</a>
+                <p>Stitch together multiple images to create seamless panoramic views.</p>
+            </div>
+        </div>
+        <div class="project">
+            <img src="final_project.jpg" alt="NeRF">
+            <div class="project-content">
+                <a href="./final_submission_2/index.html">Final Project: Neural Radiance Fields (NeRF)</a>
+                <p>Delve into Neural Radiance Fields for 3D scene reconstruction.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
